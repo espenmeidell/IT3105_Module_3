@@ -1,7 +1,7 @@
 from typing import Callable, List, Any
 import numpy as np
 
-
+# Type Aliases
 Case = List[Any]
 
 
@@ -27,7 +27,5 @@ class CaseManager:
     def get_validation_cases(self): return self.validation_cases
 
     def get_testing_cases(self): return self.testing_cases
-
-
 
 
