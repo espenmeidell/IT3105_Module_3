@@ -1,4 +1,6 @@
 # A little Tensorflow tutorial
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 
 import tensorflow as tf
 import numpy as np
@@ -157,14 +159,4 @@ def tfex8(size=5, steps=50, tvect=None,learning_rate = 0.5,showint=10):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
+print(tfex1(10, 20))
