@@ -1,0 +1,17 @@
+
+Parity 98 %
+
+def parity():
+    cman = CaseManager(lambda: tft.gen_all_parity_cases(10), 0.1, 0.1)
+    ann = NeuralNet(input_size=10,
+                    layer_sizes=[100, 2],
+                    layer_functions=[ActivationFunction.RELU, ActivationFunction.RELU],
+                    case_manager=cman,
+                    learning_rate=0.1
+                    )
+    ann.train(1000, 50)
+    ann.test()
+    plot_training_error(ann.training_error_history, ann.validation_error_history)
+
+
+parity()
