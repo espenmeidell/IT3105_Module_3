@@ -95,3 +95,6 @@ def mnist():
         cases.append([features[i].tolist(), one_hot])
     return cases
 
+
+def iris():
+    return read_numeric_file_with_class_in_final_column(path="data/iris.txt")

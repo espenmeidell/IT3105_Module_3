@@ -5,7 +5,7 @@ from pprint import pprint
 import time
 from typing import Callable, Dict
 from NeuralNet import ActivationFunction, cross_entropy, mse, NeuralNet
-from DataReaders import parity, bit_count, wine, yeast, glass, seg_count, mnist, auto
+from DataReaders import parity, bit_count, wine, yeast, glass, seg_count, mnist, auto, iris
 from CaseManager import CaseManager
 from Plotting import plot_training_error
 
@@ -17,7 +17,7 @@ def log(msg: str, level: str = "INFO"):
     print("[%s][Time: %6d ms]: %s" % (level, current_milli_time() - start_time, msg))
 
 
-path = "run_configs/bit_count.json"
+path = "run_configs/iris.json"
 
 with open(path) as file:
     data = json.loads(file.read())
@@ -60,6 +60,8 @@ def string_to_reader(s: str) -> Callable:
         return mnist
     elif s == "auto":
         return auto
+    elif s == "iris":
+        return iris
     assert False, "Invalid data source: %s" % s
 
 
