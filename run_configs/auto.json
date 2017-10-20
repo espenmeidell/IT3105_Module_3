@@ -1,0 +1,23 @@
+{
+  "comment": "",
+  "case_manager": {
+    "reader": "auto",
+    "fraction": 1.0,
+    "validation": 0.0,
+    "test": 0.0
+  },
+  "net": {
+    "input_size": 8,
+    "layer_sizes": [3, 8],
+    "functions": ["relu", "sigmoid"],
+    "learning_rate": 0.1,
+    "error": "mse",
+    "weight_range": [-0.1, 0.1],
+    "bias_range": [-0.1, 0.1]
+  },
+  "training":{
+    "epochs": 5000,
+    "minibatch_size": 1,
+    "validation_interval": 0
+  }
+}

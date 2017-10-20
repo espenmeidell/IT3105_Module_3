@@ -84,6 +84,9 @@ class NeuralNet:
         correct_predictions = tf.equal(tf.argmax(self.target, 1), tf.argmax(self.output_layer, 1))
         self.accuracy = tf.reduce_mean(tf.cast(correct_predictions, tf.float32))
 
+        # Variables to monitor
+        self.monitoring = []
+
     def _build_network(self,
                        layer_sizes: List[int],
                        layer_functions: List[ActivationFunction],
@@ -128,14 +131,15 @@ class NeuralNet:
             error = error / n_minibatches
             self.training_error_history.append((i, error))
             acc = acc / n_minibatches
-            if i % validation_interval == 0:
+            if validation_interval > 0 and i % validation_interval == 0:
                 self.test(True, i)
 
             if i % 100 == 0:
                 print("\n[Training] Error at step %d is %f" % (i, error))
                 print("[Training] Accuracy at step %d is %.2f%%" % (i, acc*100))
         # Extra validation testing when done for graph
-        self.test(True, epochs)
+        if validation_interval > 0:
+            self.test(True, epochs)
 
     def test(self, validation: bool=False, epoch: int=0):
         print("\nStarting validation testing") if validation else print("\nStarting testing")
@@ -149,69 +153,14 @@ class NeuralNet:
         print("Testing error: %f" % e)
         print("Testing accuracy: %.2f%%" % (a*100))
 
-
-
-def autoencoder():
-    ann = NeuralNet(input_size=8,
-                    layer_sizes=[3, 8],
-                    layer_functions=[ActivationFunction.RELU, ActivationFunction.SIGMOID],
-                    case_manager=CaseManager((lambda : tft.gen_all_one_hot_cases(2**3)), 0.1, 0.1),
-                    learning_rate=0.1)
-    ann.train(10000, 10)
-    plot_training_error(ann.training_error_history, ann.validation_error_history)
-    ann.test()
-
-
-def wine():
-    cman = CaseManager(lambda: read_numeric_file_with_class_in_final_column("data/winequality_red.txt",
-                                                                             separator=";",
-                                                                             normalize_parameters=True), 0.2, 0.2)
-    ann = NeuralNet(input_size=11,
-                    layer_sizes=[10, 10, 9],
-                    layer_functions=[ActivationFunction.RELU, ActivationFunction.RELU, ActivationFunction.SOFTMAX],
-                    case_manager=cman,
-                    learning_rate=0.2)
-    ann.train(10000, 50)
-    plot_training_error(ann.training_error_history, ann.validation_error_history)
-    ann.test()
-
-def yeast():
-    cman = CaseManager(lambda: read_numeric_file_with_class_in_final_column("data/yeast.txt",
-                                                                             separator=",",
-                                                                             normalize_parameters=True), 0.2, 0.2)
-    pprint(cman.get_training_cases()[0])
-    ann = NeuralNet(input_size=8,
-                    layer_sizes=[150, 11],
-                    layer_functions=[ActivationFunction.RELU] + [ActivationFunction.SIGMOID],
-                    case_manager=cman,
-                    learning_rate=0.1)
-    ann.train(3000, 10)
-    plot_training_error(ann.training_error_history, ann.validation_error_history)
-    ann.test()
-
-
-def parity():
-    cman = CaseManager(lambda: tft.gen_all_parity_cases(10), 0.1, 0.1)
-    ann = NeuralNet(input_size=10,
-                    layer_sizes=[100, 2],
-                    layer_functions=[ActivationFunction.RELU, ActivationFunction.RELU],
-                    case_manager=cman,
-                    learning_rate=0.1
-                    )
-    ann.train(1000, 50)
-    ann.test()
-    plot_training_error(ann.training_error_history, ann.validation_error_history)
-
-
-def count():
-    cman = CaseManager(lambda: tft.gen_vector_count_cases(500, 15), 0.1, 0.1)
-    ann = NeuralNet(input_size=15,
-                    layer_sizes=[100, 16, 16],
-                    layer_functions=[ActivationFunction.RELU,ActivationFunction.RELU, ActivationFunction.SOFTMAX],
-                    case_manager=cman,
-                    learning_rate=0.1
-                    )
-    ann.train(1000, 50)
-    ann.test()
-    plot_training_error(ann.training_error_history, ann.validation_error_history)
+    def monitor(self):
+        cases = self.case_manager.get_training_cases()
+        print(len(cases))
+        inputs = [c[0] for c in cases]
+        targets = [c[1] for c in cases]
+        feeder = {self.input_layer: inputs, self.target: targets}
+        i, x, o = self.session.run([self.input_layer, self.layers[0].weights, self.layers[-1].output], feed_dict=feeder)
+        tft.hinton_plot(i, title="Input Layer")
+        tft.hinton_plot(x)
+        tft.hinton_plot(o)
 

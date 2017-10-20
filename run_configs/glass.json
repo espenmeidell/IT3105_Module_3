@@ -1,23 +1,23 @@
 {
-  "comment": "Good performance on test and training most of the time, gets stuck sometimes",
+  "comment": "Overfits to 95%",
   "case_manager": {
-    "reader": "parity",
+    "reader": "glass",
     "fraction": 1.0,
     "validation": 0.1,
     "test": 0.1
   },
   "net": {
-    "input_size": 10,
-    "layer_sizes": [100, 2],
-    "functions": ["relu", "relu"],
+    "input_size": 9,
+    "layer_sizes": [150,6],
+    "functions": ["relu","softmax"],
     "learning_rate": 0.1,
     "error": "mse",
     "weight_range": [-0.1, 0.1],
     "bias_range": [-0.1, 0.1]
   },
   "training":{
-    "epochs": 1000,
-    "minibatch_size": 20,
+    "epochs": 10000,
+    "minibatch_size": 50,
     "validation_interval": 100
   }
 }

@@ -2,6 +2,9 @@ from typing import List, Any
 import numpy as np
 from functools import partial
 import examples.tflowtools as tft
+from mnist import mnist_basics
+from pprint import pprint
+
 
 # Type Aliases
 Case = List[Any]
@@ -18,11 +21,16 @@ def read_numeric_file_with_class_in_final_column(path: str,
     file = open(path)
     data = np.array(list(map(process_line, file)))
 
+
     parameters = data[:, :data.shape[1]-1]
     classes = data[:, [-1]]
 
-    if normalize_parameters:
-        parameters = parameters / parameters.max(axis=0)
+    means = np.mean(parameters, axis=0)
+    std = np.std(parameters, axis=0)
+
+    for i in range(len(parameters)):
+        for j in range(len(parameters[i])):
+            parameters[i][j] = (parameters[i][j] - means[j]) / std[j]
 
     if one_hot_vector_target:
         cases = []
@@ -35,7 +43,7 @@ def read_numeric_file_with_class_in_final_column(path: str,
 
         return cases
 
-    return list(np.concatenate((parameters, classes), axis=1).tolist())
+    assert False, "Only one hot vector support"
 
 
 def parity():
@@ -56,6 +64,34 @@ def yeast():
                    normalize_parameters=False)
 
 
-def count():
+def glass():
+    return read_numeric_file_with_class_in_final_column(
+                   path="data/glass.txt",
+                   separator=",",
+                   normalize_parameters=True)
+
+
+def bit_count():
     return tft.gen_vector_count_cases(num=500, size=15)
+
+
+def seg_count():
+    return tft.gen_segmented_vector_cases(25, 1000, 0, 8)
+
+
+def auto():
+    return tft.gen_all_one_hot_cases(2**3)
+
+
+def mnist():
+    cases = mnist_basics.load_all_flat_cases()
+    features = np.array(cases[0])
+    features = features / 255
+    classes = cases[1]
+    cases = []
+    for i in range(len(classes)):
+        one_hot = [0] * 10
+        one_hot[classes[i]] = 1
+        cases.append([features[i].tolist(), one_hot])
+    return cases
 

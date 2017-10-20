@@ -11,6 +11,6 @@ def plot_training_error(error_history, validation_history):
 
     x, y = zip(*validation_history)
     plt.plot(x, y, label="Validation")
-    plt.legend(loc='lower left')
+    plt.legend(loc='upper right')
     plt.title("Training and validation error")
     plt.show()

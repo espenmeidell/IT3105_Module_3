@@ -8,6 +8,7 @@ Case = List[Any]
 class CaseManager:
     def __init__(self
                  , case_function: Callable[[], List[Case]]
+                 , fraction: float=1.0
                  , validation_fraction: float = 0
                  , testing_fraction: float = 0):
         self.validation_fraction = validation_fraction
@@ -15,6 +16,7 @@ class CaseManager:
         self.training_fraction = 1 - (validation_fraction + testing_fraction)
 
         self.cases = np.array(case_function())
+        self.cases = self.cases[0: round(fraction * len(self.cases))]
         np.random.shuffle(self.cases)
         separator1 = round(len(self.cases) * self.training_fraction)
         separator2 = separator1 + round(len(self.cases) * self.validation_fraction)
