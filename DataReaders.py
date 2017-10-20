@@ -1,5 +1,7 @@
 from typing import List, Any
 import numpy as np
+from functools import partial
+import examples.tflowtools as tft
 
 # Type Aliases
 Case = List[Any]
@@ -24,15 +26,36 @@ def read_numeric_file_with_class_in_final_column(path: str,
 
     if one_hot_vector_target:
         cases = []
-        target_vector_length = int(classes.max())+1
+        class_indices = np.unique(classes)
+        target_vector_length = class_indices
         for i in range(len(parameters)):
             target = [0] * target_vector_length
-            target[int(classes[i])] = 1
+            target[np.where(class_indices == classes[i])] = 1
             cases.append([parameters[i].tolist(), target])
 
         return cases
 
-    # TODO: split into inputs and targets
     return list(np.concatenate((parameters, classes), axis=1).tolist())
 
+
+def parity():
+    return tft.gen_all_parity_cases(num_bits=10)
+
+
+def wine():
+    return read_numeric_file_with_class_in_final_column(
+                   path="data/winequality_red.txt",
+                   separator=";",
+                   normalize_parameters=True)
+
+
+def yeast():
+    return read_numeric_file_with_class_in_final_column(
+                   path="data/yeast.txt",
+                   separator=",",
+                   normalize_parameters=False)
+
+
+def count():
+    return tft.gen_vector_count_cases(num=500, size=15)
 

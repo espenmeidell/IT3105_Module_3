@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-from typing import List, Tuple
+from typing import List, Tuple, Callable
 from enum import Enum
 import math
 from CaseManager import CaseManager
@@ -18,6 +18,14 @@ class ActivationFunction(Enum):
 
     def __call__(self, *args):
         self.value(*args)
+
+
+def mse(output: tf.Tensor, target: tf.Tensor) -> tf.Tensor:
+    return tf.reduce_mean(tf.square(target - output), name="MSE")
+
+
+def cross_entropy(output: tf.Tensor, target: tf.Tensor) -> tf.Tensor:
+    return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=target, logits=output), name="CrossEnt")
 
 
 class NNLayer:
@@ -51,6 +59,7 @@ class NeuralNet:
                  layer_functions: List[ActivationFunction],
                  case_manager: CaseManager,
                  learning_rate: float,
+                 error_function: Callable = mse,
                  init_weight_range: Tuple[float, float]=(-0.1, 0.1),
                  init_bias_range: Tuple[float, float]=(-0.1, 0.1)):
 
@@ -69,9 +78,7 @@ class NeuralNet:
 
         self._build_network(layer_sizes, layer_functions, init_weight_range, init_bias_range)
 
-        # TODO: Generalize
-        # self.error = tf.reduce_mean(tf.square(self.target - self.output_layer), name="MSE")
-        self.error = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=self.target, logits=self.output_layer), name="CrossEnt")
+        self.error = error_function(self.output_layer, self.target)
         optimizer = tf.train.GradientDescentOptimizer(learning_rate)
         self.trainer = optimizer.minimize(self.error, name="Backprop")
         correct_predictions = tf.equal(tf.argmax(self.target, 1), tf.argmax(self.output_layer, 1))
@@ -188,6 +195,19 @@ def parity():
     ann = NeuralNet(input_size=10,
                     layer_sizes=[100, 2],
                     layer_functions=[ActivationFunction.RELU, ActivationFunction.RELU],
+                    case_manager=cman,
+                    learning_rate=0.1
+                    )
+    ann.train(1000, 50)
+    ann.test()
+    plot_training_error(ann.training_error_history, ann.validation_error_history)
+
+
+def count():
+    cman = CaseManager(lambda: tft.gen_vector_count_cases(500, 15), 0.1, 0.1)
+    ann = NeuralNet(input_size=15,
+                    layer_sizes=[100, 16, 16],
+                    layer_functions=[ActivationFunction.RELU,ActivationFunction.RELU, ActivationFunction.SOFTMAX],
                     case_manager=cman,
                     learning_rate=0.1
                     )

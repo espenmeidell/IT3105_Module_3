@@ -1,0 +1,19 @@
+{
+  "case_manager": {
+    "reader": "yeast",
+    "validation": 0.1,
+    "test": 0.1
+  },
+  "net": {
+    "input_size": 8,
+    "layer_sizes": [100,100,10],
+    "functions": ["relu","relu","sigmoid"],
+    "learning_rate": 0.1,
+    "error": "crossent"
+  },
+  "training":{
+    "epochs": 5000,
+    "minibatch_size": 8,
+    "validation_interval": 100
+  }
+}
