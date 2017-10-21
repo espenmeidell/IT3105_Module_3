@@ -3,11 +3,14 @@ import numpy as np
 from typing import List, Tuple, Callable
 from enum import Enum
 import math
+import random
 from CaseManager import CaseManager
 import examples.tflowtools as tft
 from Plotting import plot_training_error
 from pprint import pprint
 from DataReaders import read_numeric_file_with_class_in_final_column
+random.seed(123)
+tf.set_random_seed(123)
 
 
 class ActivationFunction(Enum):
@@ -79,13 +82,15 @@ class NeuralNet:
         self._build_network(layer_sizes, layer_functions, init_weight_range, init_bias_range)
 
         self.error = error_function(self.output_layer, self.target)
-        optimizer = tf.train.GradientDescentOptimizer(learning_rate)
+        optimizer = tf.train.AdamOptimizer(learning_rate)
         self.trainer = optimizer.minimize(self.error, name="Backprop")
         correct_predictions = tf.equal(tf.argmax(self.target, 1), tf.argmax(self.output_layer, 1))
         self.accuracy = tf.reduce_mean(tf.cast(correct_predictions, tf.float32))
 
         # Variables to monitor
         self.monitoring = []
+        self.session = tf.Session()
+        self.session.run(tf.global_variables_initializer())
 
     def _build_network(self,
                        layer_sizes: List[int],
@@ -109,8 +114,6 @@ class NeuralNet:
             self.output_layer = layer.output
             self.layers.append(layer)
         self.target = tf.placeholder(tf.float64, (None, input_size), "Target")
-        self.session = tf.Session()
-        self.session.run(tf.global_variables_initializer())
 
     def train(self, epochs: int, minibatch_size: int, validation_interval: int=100):
         print("\nStarting training. Epochs: %d, Minibatch size: %d" % (epochs, minibatch_size))
@@ -134,7 +137,7 @@ class NeuralNet:
             if validation_interval > 0 and i % validation_interval == 0:
                 self.test(True, i)
 
-            if i % 100 == 0:
+            if i % validation_interval == 0:
                 print("\n[Training] Error at step %d is %f" % (i, error))
                 print("[Training] Accuracy at step %d is %.2f%%" % (i, acc*100))
         # Extra validation testing when done for graph
@@ -154,7 +157,7 @@ class NeuralNet:
         print("Testing accuracy: %.2f%%" % (a*100))
 
     def monitor(self):
-        cases = self.case_manager.get_training_cases()
+        cases = self.case_manager.get_training_cases()[0:10]
         print(len(cases))
         inputs = [c[0] for c in cases]
         targets = [c[1] for c in cases]

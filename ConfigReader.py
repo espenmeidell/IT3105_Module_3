@@ -17,7 +17,7 @@ def log(msg: str, level: str = "INFO"):
     print("[%s][Time: %6d ms]: %s" % (level, current_milli_time() - start_time, msg))
 
 
-path = "run_configs/iris.json"
+path = "run_configs/bit_count.json"
 
 with open(path) as file:
     data = json.loads(file.read())
@@ -90,7 +90,6 @@ data["net"]["error"] = string_to_error(data["net"]["error"])
 data["case_manager"]["reader"] = string_to_reader(data["case_manager"]["reader"])
 
 
-
 network = data_to_neural_net(data)
 
 network.train(epochs=data["training"]["epochs"],
@@ -103,6 +102,6 @@ network.test()
 
 plot_training_error(network.training_error_history, network.validation_error_history)
 
-#network.monitor()
-
-#input()
+# network.monitor()
+#
+# input()
