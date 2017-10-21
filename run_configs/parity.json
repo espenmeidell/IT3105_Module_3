@@ -10,7 +10,7 @@
     "input_size": 10,
     "layer_sizes": [100, 2],
     "functions": ["relu", "relu"],
-    "learning_rate": 0.1,
+    "learning_rate": 0.01,
     "error": "mse",
     "weight_range": [-0.1, 0.1],
     "bias_range": [-0.1, 0.1]

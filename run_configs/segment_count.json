@@ -9,15 +9,15 @@
   "net": {
     "input_size": 25,
     "layer_sizes": [10,9],
-    "functions": ["relu","softmax"],
-    "learning_rate": 0.1,
+    "functions": ["tanh","softmax"],
+    "learning_rate": 0.01,
     "error": "crossent",
     "weight_range": [-0.1, 0.1],
-    "bias_range": [-0.1, 0.1]
+    "bias_range": [0, 0.1]
   },
   "training":{
-    "epochs": 20000,
-    "minibatch_size": 50,
+    "epochs": 5000,
+    "minibatch_size": 25,
     "validation_interval": 100
   }
 }

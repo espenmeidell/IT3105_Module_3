@@ -17,7 +17,7 @@ def log(msg: str, level: str = "INFO"):
     print("[%s][Time: %6d ms]: %s" % (level, current_milli_time() - start_time, msg))
 
 
-path = "run_configs/bit_count.json"
+path = "run_configs/mnist.json"
 
 with open(path) as file:
     data = json.loads(file.read())
