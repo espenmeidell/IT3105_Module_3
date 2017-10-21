@@ -17,7 +17,7 @@ def log(msg: str, level: str = "INFO"):
     print("[%s][Time: %6d ms]: %s" % (level, current_milli_time() - start_time, msg))
 
 
-path = "run_configs/mnist.json"
+path = "run_configs/glass.json"
 
 with open(path) as file:
     data = json.loads(file.read())
@@ -102,6 +102,12 @@ network.test()
 
 plot_training_error(network.training_error_history, network.validation_error_history)
 
-# network.monitor()
-#
-# input()
+if "monitoring" in data.keys():
+    specs = data["monitoring"]
+    network.monitor(n_cases=specs["n_cases"],
+                    input=specs["input"],
+                    output=specs["output"],
+                    layers=specs["layers"],
+                    dendrogram=specs["dendrogram"])
+
+input()

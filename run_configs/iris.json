@@ -16,8 +16,16 @@
     "bias_range": [-0.1, 0.1]
   },
   "training":{
-    "epochs": 1000,
+    "epochs": 300,
     "minibatch_size": 4,
     "validation_interval": 100
+  },
+  "monitoring": {
+    "input": true,
+    "output": true,
+    "layers": [
+      [0, "w"],
+      [1, "b"]
+    ]
   }
 }

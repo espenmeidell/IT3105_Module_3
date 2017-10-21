@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-from typing import List, Tuple, Callable
+from typing import List, Tuple, Callable, Union
 from enum import Enum
 import math
 import random
@@ -41,6 +41,7 @@ class NNLayer:
                  init_weight_range: Tuple[float, float],
                  init_bias_range: Tuple[float, float]):
         self.name = "Layer_" + str(index)
+        self.input = input
         self.weights = tf.Variable(np.random.uniform(init_weight_range[0],
                                                      init_weight_range[1],
                                                      size=(input_size, size)),
@@ -137,7 +138,10 @@ class NeuralNet:
             if validation_interval > 0 and i % validation_interval == 0:
                 self.test(True, i)
 
-            if i % validation_interval == 0:
+            if validation_interval > 0 and i % validation_interval == 0:
+                print("\n[Training] Error at step %d is %f" % (i, error))
+                print("[Training] Accuracy at step %d is %.2f%%" % (i, acc*100))
+            if validation_interval == 0 and i % 100 == 0:
                 print("\n[Training] Error at step %d is %f" % (i, error))
                 print("[Training] Accuracy at step %d is %.2f%%" % (i, acc*100))
         # Extra validation testing when done for graph
@@ -156,14 +160,45 @@ class NeuralNet:
         print("Testing error: %f" % e)
         print("Testing accuracy: %.2f%%" % (a*100))
 
-    def monitor(self):
-        cases = self.case_manager.get_training_cases()[0:10]
-        print(len(cases))
+    def monitor(self,
+                n_cases: int,
+                input: bool=True,
+                output: bool=True,
+                dendrogram: List=[],
+                layers: Union[None, List[List]]=None):
+        cases = self.case_manager.get_training_cases()[0:n_cases]
+        variables = []
+        titles = []
         inputs = [c[0] for c in cases]
         targets = [c[1] for c in cases]
         feeder = {self.input_layer: inputs, self.target: targets}
-        i, x, o = self.session.run([self.input_layer, self.layers[0].weights, self.layers[-1].output], feed_dict=feeder)
-        tft.hinton_plot(i, title="Input Layer")
-        tft.hinton_plot(x)
-        tft.hinton_plot(o)
+
+        if input:
+            variables.append(self.input_layer)
+            titles.append("Input Layer")
+        if output:
+            variables.append(self.output_layer)
+            titles.append("Output Layer")
+
+        for spec in layers:
+            if spec[1] == "w":
+                variables.append(self.layers[spec[0]].weights)
+                titles.append("Layer %d weights" % spec[0])
+            else:
+                variables.append(self.layers[spec[0]].biases)
+                titles.append("Layer %d biases" % spec[0])
+
+        result = self.session.run(variables, feed_dict=feeder)
+
+        for i in range(len(result)):
+            if result[i].ndim == 1:
+                tft.display_matrix(np.array([result[i]]), title=titles[i])
+            else:
+                tft.hinton_plot(result[i], title=titles[i])
+
+        if len(dendrogram) > 0:
+            for l in dendrogram:
+                i, a = self.session.run([self.input_layer, self.layers[l].input], feed_dict=feeder)
+                labels = list(map(tft.bits_to_str, i.astype(int)))
+                tft.dendrogram(a, labels)
 
