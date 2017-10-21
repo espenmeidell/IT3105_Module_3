@@ -149,7 +149,7 @@ venv.bak/
 # End of https://www.gitignore.io/api/linux,macos,python
 
 mnist-zip/
-
+mnist/
 
 # Created by https://www.gitignore.io/api/pycharm
 
