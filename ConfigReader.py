@@ -9,15 +9,14 @@ from DataReaders import parity, bit_count, wine, yeast, glass, seg_count, mnist,
 from CaseManager import CaseManager
 from Plotting import plot_training_error
 
-current_milli_time = lambda: int(round(time.time() * 1000))
+
+def current_milli_time(): return int(round(time.time() * 1000))
+
+
 start_time = current_milli_time()
 
 
-def log(msg: str, level: str = "INFO"):
-    print("[%s][Time: %6d ms]: %s" % (level, current_milli_time() - start_time, msg))
-
-
-path = "run_configs/glass.json"
+path = "run_configs/yeast.json"
 
 with open(path) as file:
     data = json.loads(file.read())
@@ -32,6 +31,8 @@ def string_to_func(s: str) -> ActivationFunction:
         return ActivationFunction.TANH
     elif s == "sigmoid":
         return ActivationFunction.SIGMOID
+    elif s == "lrelu":
+        return ActivationFunction.LRELU
     assert False, "Invalid activation function: %s" % s
 
 
@@ -109,5 +110,4 @@ if "monitoring" in data.keys():
                     output=specs["output"],
                     layers=specs["layers"],
                     dendrogram=specs["dendrogram"])
-
-input()
+    input()

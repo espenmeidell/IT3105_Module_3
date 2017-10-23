@@ -61,7 +61,7 @@ def yeast():
     return read_numeric_file_with_class_in_final_column(
                    path="data/yeast.txt",
                    separator=",",
-                   normalize_parameters=False)
+                   normalize_parameters=True)
 
 
 def glass():

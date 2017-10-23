@@ -6,6 +6,7 @@ import math
 import random
 from CaseManager import CaseManager
 import examples.tflowtools as tft
+from termcolor import colored
 from Plotting import plot_training_error
 from pprint import pprint
 from DataReaders import read_numeric_file_with_class_in_final_column
@@ -18,6 +19,8 @@ class ActivationFunction(Enum):
     SOFTMAX = tf.nn.softmax
     RELU = tf.nn.relu
     TANH = tf.nn.tanh
+    LRELU = "lrelu"
+
 
     def __call__(self, *args):
         self.value(*args)
@@ -52,8 +55,12 @@ class NNLayer:
                                                     size=size),
                                   name=self.name + "_bias",
                                   trainable=True)
-        self.output = function(tf.matmul(input, self.weights) + self.biases,
-                               name=self.name + "_out")
+        if function == ActivationFunction.LRELU:
+            tmp = tf.matmul(input, self.weights) + self.biases
+            self.output = tf.maximum(tmp, 0.01*tmp, name=self.name + "_out")
+        else:
+            self.output = function(tf.matmul(input, self.weights) + self.biases,
+                                   name=self.name + "_out")
 
 
 class NeuralNet:
@@ -139,26 +146,28 @@ class NeuralNet:
                 self.test(True, i)
 
             if validation_interval > 0 and i % validation_interval == 0:
-                print("\n[Training] Error at step %d is %f" % (i, error))
-                print("[Training] Accuracy at step %d is %.2f%%" % (i, acc*100))
+                print(colored("\n[Training] Error at step %d is %f" % (i, error), "green"))
+                print(colored("[Training] Accuracy at step %d is %.2f%%" % (i, acc*100), "green"))
             if validation_interval == 0 and i % 100 == 0:
-                print("\n[Training] Error at step %d is %f" % (i, error))
-                print("[Training] Accuracy at step %d is %.2f%%" % (i, acc*100))
+                print(colored("\n[Training] Error at step %d is %f" % (i, error), "green"))
+                print(colored("[Training] Accuracy at step %d is %.2f%%" % (i, acc*100), "green"))
         # Extra validation testing when done for graph
         if validation_interval > 0:
             self.test(True, epochs)
 
     def test(self, validation: bool=False, epoch: int=0):
-        print("\nStarting validation testing") if validation else print("\nStarting testing")
+        print("\nStarting validation") if validation else print("\nStarting testing")
         cases = self.case_manager.get_validation_cases() if validation else self.case_manager.get_testing_cases()
         inputs = [c[0] for c in cases]
         targets = [c[1] for c in cases]
         feeder = {self.input_layer: inputs, self.target: targets}
         e, a = self.session.run([self.error, self.accuracy], feed_dict=feeder)
+        color = "red"
         if validation:
             self.validation_error_history.append((epoch, e))
-        print("Testing error: %f" % e)
-        print("Testing accuracy: %.2f%%" % (a*100))
+            color = "yellow"
+        print(colored("Testing error: %f" % e, color))
+        print(colored("Testing accuracy: %.2f%%" % (a*100), color))
 
     def monitor(self,
                 n_cases: int,

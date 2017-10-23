@@ -8,20 +8,20 @@
   },
   "net": {
     "input_size": 25,
-    "layer_sizes": [9],
-    "functions": ["softmax"],
-    "learning_rate": 0.01,
-    "error": "crossent",
+    "layer_sizes": [17,17,17,9],
+    "functions": ["relu","lrelu","lrelu","lrelu"],
+    "learning_rate": 0.001,
+    "error": "mse",
     "weight_range": [-0.1, 0.1],
-    "bias_range": [0, 0.1]
+    "bias_range": [0.01, 0.1]
   },
   "training":{
-    "epochs": 1000,
+    "epochs": 3000,
     "minibatch_size": 25,
     "validation_interval": 100
   },
   "monitoring": {
-    "n_cases": 20,
+    "n_cases": 100,
     "input": false,
     "output": false,
     "dendrogram": [0],

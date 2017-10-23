@@ -7,15 +7,15 @@
   },
   "net": {
     "input_size": 8,
-    "layer_sizes": [9,10],
-    "functions": ["relu","softmax"],
-    "learning_rate": 0.01,
-    "error": "crossent",
+    "layer_sizes": [40,25,17,10],
+    "functions": ["lrelu","lrelu","lrelu","softmax"],
+    "learning_rate": 0.0005,
+    "error": "mse",
     "weight_range": [-0.1, 0.1],
-    "bias_range": [0, 0.1]
+    "bias_range": [-0.1, 0.1]
   },
   "training":{
-    "epochs": 1000,
+    "epochs": 3000,
     "minibatch_size": 8,
     "validation_interval": 100
   }
