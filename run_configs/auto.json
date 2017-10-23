@@ -3,21 +3,30 @@
   "case_manager": {
     "reader": "auto",
     "fraction": 1.0,
-    "validation": 0.0,
-    "test": 0.0
+    "validation": 0,
+    "test": 0
   },
   "net": {
     "input_size": 8,
     "layer_sizes": [3, 8],
     "functions": ["relu", "sigmoid"],
-    "learning_rate": 0.1,
+    "learning_rate": 0.001,
     "error": "mse",
     "weight_range": [-0.1, 0.1],
-    "bias_range": [-0.1, 0.1]
+    "bias_range": [0.001, 0.1]
   },
   "training":{
     "epochs": 5000,
-    "minibatch_size": 1,
+    "minibatch_size": 8,
     "validation_interval": 0
+  },
+  "monitoring": {
+    "n_cases": 8,
+    "input": true,
+    "output": true,
+    "dendrogram": [],
+    "layers": [
+      [0, "w"]
+    ]
   }
 }

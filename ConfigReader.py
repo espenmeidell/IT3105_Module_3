@@ -16,7 +16,7 @@ def current_milli_time(): return int(round(time.time() * 1000))
 start_time = current_milli_time()
 
 
-path = "run_configs/yeast.json"
+path = "run_configs/wine.json"
 
 with open(path) as file:
     data = json.loads(file.read())
@@ -31,8 +31,14 @@ def string_to_func(s: str) -> ActivationFunction:
         return ActivationFunction.TANH
     elif s == "sigmoid":
         return ActivationFunction.SIGMOID
+    elif s == "elu":
+        return ActivationFunction.ELU
+    elif s == "softplus":
+        return ActivationFunction.SOFTPLUS
     elif s == "lrelu":
         return ActivationFunction.LRELU
+    elif s == "linear":
+        return ActivationFunction.LINEAR
     assert False, "Invalid activation function: %s" % s
 
 
@@ -99,7 +105,8 @@ network.train(epochs=data["training"]["epochs"],
 
 print("\nFinished training after %d seconds" % ((current_milli_time() - start_time)/1000))
 
-network.test()
+if data["case_manager"]["test"]:
+    network.test()
 
 plot_training_error(network.training_error_history, network.validation_error_history)
 

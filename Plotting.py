@@ -9,8 +9,10 @@ def plot_training_error(error_history, validation_history):
     plt.ylabel("Error")
     plt.xlabel("Epoch")
 
-    x, y = zip(*validation_history)
-    plt.plot(x, y, label="Validation")
+    if len(validation_history):
+        x, y = zip(*validation_history)
+        plt.plot(x, y, label="Validation")
+
     plt.legend(loc='upper right')
     plt.title("Training and validation error")
     plt.show()

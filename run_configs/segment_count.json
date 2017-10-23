@@ -21,7 +21,7 @@
     "validation_interval": 100
   },
   "monitoring": {
-    "n_cases": 100,
+    "n_cases": 20,
     "input": false,
     "output": false,
     "dendrogram": [0],

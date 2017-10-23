@@ -19,7 +19,10 @@ class ActivationFunction(Enum):
     SOFTMAX = tf.nn.softmax
     RELU = tf.nn.relu
     TANH = tf.nn.tanh
+    ELU = tf.nn.elu
+    SOFTPLUS = tf.nn.softplus
     LRELU = "lrelu"
+    LINEAR = "linear"
 
 
     def __call__(self, *args):
@@ -58,6 +61,8 @@ class NNLayer:
         if function == ActivationFunction.LRELU:
             tmp = tf.matmul(input, self.weights) + self.biases
             self.output = tf.maximum(tmp, 0.01*tmp, name=self.name + "_out")
+        elif function == ActivationFunction.LINEAR:
+            self.output = tf.matmul(input, self.weights) + self.biases
         else:
             self.output = function(tf.matmul(input, self.weights) + self.biases,
                                    name=self.name + "_out")
