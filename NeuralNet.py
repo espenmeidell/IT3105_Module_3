@@ -199,6 +199,9 @@ class NeuralNet:
             if spec[1] == "w":
                 variables.append(self.layers[spec[0]].weights)
                 titles.append("Layer %d weights" % spec[0])
+            elif spec[1] == "o":
+                variables.append(self.layers[spec[0]].output)
+                titles.append("Layer %d outputs" % spec[0])
             else:
                 variables.append(self.layers[spec[0]].biases)
                 titles.append("Layer %d biases" % spec[0])
