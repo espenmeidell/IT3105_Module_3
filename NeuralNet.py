@@ -11,6 +11,7 @@ from Plotting import plot_training_error
 from pprint import pprint
 from DataReaders import read_numeric_file_with_class_in_final_column
 random.seed(123)
+np.random.seed(123)
 tf.set_random_seed(123)
 
 

@@ -16,7 +16,7 @@ def current_milli_time(): return int(round(time.time() * 1000))
 start_time = current_milli_time()
 
 
-path = "run_configs/wine.json"
+path = "run_configs/bit_count.json"
 
 with open(path) as file:
     data = json.loads(file.read())

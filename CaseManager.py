@@ -1,6 +1,7 @@
 from typing import Callable, List, Any
 import numpy as np
 
+np.random.seed(123)
 # Type Aliases
 Case = List[Any]
 
