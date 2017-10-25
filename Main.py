@@ -9,12 +9,17 @@ def print_blue(s: str):
     print(colored(s, "blue"))
 
 
-def main():
-    print_blue("\n###########################################################")
-    print_blue("#################### NEURAL NET RUNNER ####################")
-    print_blue("###########################################################\n")
+config_list = ["parity", "bit_count", "segment_count", "wine", "yeast", "glass", "mnist", "auto", "iris"]
 
-    config_name = input(colored("Enter name of configuration (auto, wine, ...): ", "blue"))
+
+def main():
+    print_blue("\n###################################################################")
+    print_blue("######################## NEURAL NET RUNNER ########################")
+    print_blue("###################################################################\n")
+
+    print_blue("Available configurations: \n%s\n" % ", ".join(config_list))
+
+    config_name = input(colored("Enter name of configuration: ", "blue"))
 
     network, data = read_config(config_name)
 

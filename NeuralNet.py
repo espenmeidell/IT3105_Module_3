@@ -168,7 +168,7 @@ class NeuralNet:
         title = "Validation Testing" if validation else "Final Testing"
         print(colored("\n" + title, color))
         print(colored("\tError:    %f" % error, color))
-        print(colored("\tAccuracy: %.2f%%" % accuracy, color))
+        print(colored("\tAccuracy: %.2f%%" % (accuracy * 100), color))
 
     def test(self, validation: bool=False, epoch: int=0):
         cases = self.case_manager.get_validation_cases() if validation else self.case_manager.get_testing_cases()
