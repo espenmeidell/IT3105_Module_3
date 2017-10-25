@@ -16,18 +16,17 @@
     "bias_range": [-0.1, 0.1]
   },
   "training":{
-    "epochs": 300,
+    "epochs": 301,
     "minibatch_size": 4,
     "validation_interval": 100
   },
   "monitoring": {
     "input": true,
     "output": true,
-    "n_cases": 5,
+    "n_cases": 10,
     "layers": [
-      [0, "w"],
-      [1, "b"]
+      [0, "o"]
     ],
-    "dendrogram": []
+    "dendrogram": [0]
   }
 }
