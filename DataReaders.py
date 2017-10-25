@@ -4,7 +4,7 @@ from functools import partial
 import examples.tflowtools as tft
 from mnist import mnist_basics
 from pprint import pprint
-
+np.random.seed(123)
 
 # Type Aliases
 Case = List[Any]

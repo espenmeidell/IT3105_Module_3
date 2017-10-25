@@ -1,8 +1,14 @@
 # Project: IT_3105_Module_3
 # Created: 25.10.17 10:42
 from termcolor import colored
+import random
+import numpy as np
+import tensorflow as tf
 from ConfigReader import read_config, current_milli_time, start_time
 from Plotting import plot_training_error
+random.seed(123)
+np.random.seed(123)
+tf.set_random_seed(123)
 
 
 def print_blue(s: str):
