@@ -11,13 +11,13 @@
     "layer_sizes": [3, 8],
     "functions": ["relu", "softmax"],
     "learning_rate": 0.001,
-    "error": "mse",
+    "error": "crossent",
     "weight_range": [-0.1, 0.1],
-    "bias_range": [0.001, 0.1]
+    "bias_range": [-0.1, 0.1]
   },
   "training":{
-    "epochs": 2000,
-    "minibatch_size": 8,
+    "epochs": 1000,
+    "minibatch_size": 1,
     "validation_interval": 0
   },
   "monitoring": {
@@ -26,7 +26,7 @@
     "output": true,
     "dendrogram": [],
     "layers": [
-      [0, "w"]
+      [0, "o"]
     ]
   }
 }

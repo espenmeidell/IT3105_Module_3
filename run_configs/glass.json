@@ -16,7 +16,7 @@
     "bias_range": [0, 0.1]
   },
   "training":{
-    "epochs": 6000,
+    "epochs": 3001,
     "minibatch_size": 20,
     "validation_interval": 100
   }

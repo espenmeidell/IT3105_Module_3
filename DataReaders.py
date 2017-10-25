@@ -35,9 +35,10 @@ def read_numeric_file_with_class_in_final_column(path: str,
     if one_hot_vector_target:
         cases = []
         class_indices = np.unique(classes)
-        target_vector_length = class_indices
+        target_vector_length = len(class_indices)
         for i in range(len(parameters)):
             target = [0] * target_vector_length
+            target = np.array(target)
             target[np.where(class_indices == classes[i])] = 1
             cases.append([parameters[i].tolist(), target])
 

@@ -3,23 +3,16 @@
 import json
 from pprint import pprint
 import time
-from typing import Callable, Dict
+from typing import Callable, Dict, Tuple
 from NeuralNet import ActivationFunction, cross_entropy, mse, NeuralNet
 from DataReaders import parity, bit_count, wine, yeast, glass, seg_count, mnist, auto, iris
 from CaseManager import CaseManager
-from Plotting import plot_training_error
 
 
 def current_milli_time(): return int(round(time.time() * 1000))
 
 
 start_time = current_milli_time()
-
-
-path = "run_configs/bit_count.json"
-
-with open(path) as file:
-    data = json.loads(file.read())
 
 
 def string_to_func(s: str) -> ActivationFunction:
@@ -78,6 +71,7 @@ def data_to_neural_net(data: Dict) -> NeuralNet:
                        validation_fraction=data["case_manager"]["validation"],
                        testing_fraction=data["case_manager"]["test"])
 
+
     return NeuralNet(input_size=data["net"]["input_size"],
                      layer_sizes=data["net"]["layer_sizes"],
                      layer_functions=data["net"]["functions"],
@@ -88,33 +82,18 @@ def data_to_neural_net(data: Dict) -> NeuralNet:
                      init_bias_range=tuple(data["net"]["bias_range"]))
 
 
-print("\nRunning configuration: %s\n" % path)
-pprint(data)
+def read_config(name: str) -> Tuple[NeuralNet, Dict]:
+    path = "run_configs/%s.json" % name
 
+    with open(path) as file:
+        data = json.loads(file.read())
 
-data["net"]["functions"] = list(map(string_to_func, data["net"]["functions"]))
-data["net"]["error"] = string_to_error(data["net"]["error"])
-data["case_manager"]["reader"] = string_to_reader(data["case_manager"]["reader"])
+    print("\nRunning configuration: %s\n" % path)
+    pprint(data)
 
+    data["net"]["functions"] = list(map(string_to_func, data["net"]["functions"]))
+    data["net"]["error"] = string_to_error(data["net"]["error"])
+    data["case_manager"]["reader"] = string_to_reader(data["case_manager"]["reader"])
 
-network = data_to_neural_net(data)
+    return data_to_neural_net(data), data
 
-network.train(epochs=data["training"]["epochs"],
-              minibatch_size=data["training"]["minibatch_size"],
-              validation_interval=data["training"]["validation_interval"])
-
-print("\nFinished training after %d seconds" % ((current_milli_time() - start_time)/1000))
-
-if data["case_manager"]["test"]:
-    network.test()
-
-plot_training_error(network.training_error_history, network.validation_error_history)
-
-if "monitoring" in data.keys():
-    specs = data["monitoring"]
-    network.monitor(n_cases=specs["n_cases"],
-                    input=specs["input"],
-                    output=specs["output"],
-                    layers=specs["layers"],
-                    dendrogram=specs["dendrogram"])
-    input()

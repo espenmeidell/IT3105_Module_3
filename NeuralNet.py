@@ -7,9 +7,6 @@ import random
 from CaseManager import CaseManager
 import examples.tflowtools as tft
 from termcolor import colored
-from Plotting import plot_training_error
-from pprint import pprint
-from DataReaders import read_numeric_file_with_class_in_final_column
 random.seed(123)
 np.random.seed(123)
 tf.set_random_seed(123)
@@ -129,6 +126,12 @@ class NeuralNet:
             self.layers.append(layer)
         self.target = tf.placeholder(tf.float64, (None, input_size), "Target")
 
+    @staticmethod
+    def _print_train_output(epoch: int, n_epochs: int, e: int, a: int):
+        print(colored("\n[Training] Epoch %d/%d" % (epoch, n_epochs), "green"))
+        print(colored("\tError:    %f" % e, "green"))
+        print(colored("\tAccuracy: %.2f%%" % a, "green"))
+
     def train(self, epochs: int, minibatch_size: int, validation_interval: int=100):
         print("\nStarting training. Epochs: %d, Minibatch size: %d" % (epochs, minibatch_size))
         cases = self.case_manager.get_training_cases()
@@ -152,28 +155,30 @@ class NeuralNet:
                 self.test(True, i)
 
             if validation_interval > 0 and i % validation_interval == 0:
-                print(colored("\n[Training] Error at step %d is %f" % (i, error), "green"))
-                print(colored("[Training] Accuracy at step %d is %.2f%%" % (i, acc*100), "green"))
+                NeuralNet._print_train_output(i, epochs, error, acc*100)
             if validation_interval == 0 and i % 100 == 0:
-                print(colored("\n[Training] Error at step %d is %f" % (i, error), "green"))
-                print(colored("[Training] Accuracy at step %d is %.2f%%" % (i, acc*100), "green"))
+                NeuralNet._print_train_output(i, epochs, error, acc * 100)
         # Extra validation testing when done for graph
         if validation_interval > 0:
             self.test(True, epochs)
 
+    @staticmethod
+    def _print_test_output(validation: bool, error: float, accuracy: float):
+        color = "yellow" if validation else "magenta"
+        title = "Validation Testing" if validation else "Final Testing"
+        print(colored("\n" + title, color))
+        print(colored("\tError:    %f" % error, color))
+        print(colored("\tAccuracy: %.2f%%" % accuracy, color))
+
     def test(self, validation: bool=False, epoch: int=0):
-        print("\nStarting validation") if validation else print("\nStarting testing")
         cases = self.case_manager.get_validation_cases() if validation else self.case_manager.get_testing_cases()
         inputs = [c[0] for c in cases]
         targets = [c[1] for c in cases]
         feeder = {self.input_layer: inputs, self.target: targets}
         e, a = self.session.run([self.error, self.accuracy], feed_dict=feeder)
-        color = "red"
         if validation:
             self.validation_error_history.append((epoch, e))
-            color = "yellow"
-        print(colored("Testing error: %f" % e, color))
-        print(colored("Testing accuracy: %.2f%%" % (a*100), color))
+        NeuralNet._print_test_output(validation, e, a)
 
     def monitor(self,
                 n_cases: int,
@@ -203,7 +208,7 @@ class NeuralNet:
                 variables.append(self.layers[spec[0]].output)
                 titles.append("Layer %d outputs" % spec[0])
             else:
-                variables.append(self.layers[spec[0]].biases)
+                variables.append(self.layers[spec[0]].biases) # biases
                 titles.append("Layer %d biases" % spec[0])
 
         result = self.session.run(variables, feed_dict=feeder)
@@ -213,6 +218,7 @@ class NeuralNet:
                 tft.display_matrix(np.array([result[i]]), title=titles[i])
             else:
                 tft.hinton_plot(result[i], title=titles[i])
+                # tft.display_matrix(result[i], title=titles[i])
 
         if len(dendrogram) > 0:
             for l in dendrogram:
