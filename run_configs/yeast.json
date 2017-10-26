@@ -18,5 +18,13 @@
     "epochs": 3000,
     "minibatch_size": 8,
     "validation_interval": 100
+  },
+  "monitoring": {
+    "n_cases": 100,
+    "input": true,
+    "output": true,
+    "dendrogram": [3],
+    "layers": [
+    ]
   }
 }

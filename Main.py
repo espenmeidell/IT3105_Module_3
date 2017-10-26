@@ -50,7 +50,7 @@ def main():
                         layers=specs["layers"],
                         dendrogram=specs["dendrogram"])
         input()
-    main()
+
 
 
 main()

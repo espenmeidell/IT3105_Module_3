@@ -8,7 +8,7 @@
   },
   "net": {
     "input_size": 4,
-    "layer_sizes": [3,3],
+    "layer_sizes": [2,3],
     "functions": ["relu","softmax"],
     "learning_rate": 0.005,
     "error": "crossent",
@@ -23,10 +23,14 @@
   "monitoring": {
     "input": true,
     "output": true,
-    "n_cases": 10,
+    "n_cases": 20,
     "layers": [
-      [0, "o"]
+      [0, "o"],
+      [0, "w"],
+      [0, "b"],
+      [1, "w"],
+      [1, "b"]
     ],
-    "dendrogram": [0]
+    "dendrogram": [1]
   }
 }
