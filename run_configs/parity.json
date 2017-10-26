@@ -1,5 +1,4 @@
 {
-  "comment": "Good performance on test and training most of the time, gets stuck sometimes",
   "case_manager": {
     "reader": "parity",
     "fraction": 1.0,
@@ -8,9 +7,9 @@
   },
   "net": {
     "input_size": 10,
-    "layer_sizes": [100, 2],
+    "layer_sizes": [150, 2],
     "functions": ["relu", "relu"],
-    "learning_rate": 0.01,
+    "learning_rate": 0.001,
     "error": "mse",
     "weight_range": [-0.1, 0.1],
     "bias_range": [-0.1, 0.1]
@@ -24,9 +23,8 @@
     "n_cases": 10,
     "input": true,
     "output": true,
-    "dendrogram": [0],
+    "dendrogram": [],
     "layers": [
-      [0, "o"]
     ]
   }
 }

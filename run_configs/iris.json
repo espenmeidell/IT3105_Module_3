@@ -23,10 +23,10 @@
   "monitoring": {
     "input": true,
     "output": true,
-    "n_cases": 10,
+    "n_cases": 20,
     "layers": [
       [0, "o"]
     ],
-    "dendrogram": [0]
+    "dendrogram": [1]
   }
 }

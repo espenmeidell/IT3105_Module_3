@@ -100,6 +100,7 @@ class NeuralNet:
 
         # Variables to monitor
         self.monitoring = []
+
         self.session = tf.Session()
         self.session.run(tf.global_variables_initializer())
 
@@ -222,7 +223,7 @@ class NeuralNet:
 
         if len(dendrogram) > 0:
             for l in dendrogram:
-                i, a = self.session.run([self.input_layer, self.layers[l].input], feed_dict=feeder)
+                i, a = self.session.run([self.input_layer, self.layers[l].output], feed_dict=feeder)
                 # labels = list(map(tft.bits_to_str, i.astype(int)))
                 labels = list(map(str, targets))
                 tft.dendrogram(a, labels)
